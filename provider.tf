@@ -19,10 +19,10 @@ provider "aws" {
   region = "us-east-1"
   default_tags {
     tags = {
-            Environment = "Testing"
+            Environment = "Development"
             By = "Pavan Kumar Divi"
-            Source = "Terraform"
-            Project_Name = "VPC_DEMO"
+            Script = "Terraform"
+            Project_Name = "Roboshop"
         }
     }
   }

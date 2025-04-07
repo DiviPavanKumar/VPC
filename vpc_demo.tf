@@ -1,27 +1,44 @@
 resource "aws_vpc" "vpc_demo" {
   cidr_block = "10.0.0.0/16"
   tags = {
-    Name = "VPN_Demo_Testing"
+    Name = "Roboshop_VPC"
   }
 }
 
-resource "aws_subnet" "vpc_demo_subnets" {
+resource "aws_subnet" "public" {
+  vpc_id     = aws_vpc.vpc_demo.id
+  cidr_block = "10.0.1.0/24"
 
-  for_each = { for subnet in var.subnet_configs : subnet.name => subnet }
-
-  vpc_id            = aws_vpc.vpc_demo.id
-  cidr_block        = each.value.cidr_block
-  availability_zone = each.value.availability_zone
   tags = {
-    Name = each.key
+    Name = "Public_Subnet"
+  }
+}
+
+resource "aws_subnet" "private" {
+  vpc_id     = aws_vpc.vpc_demo.id
+  cidr_block = "10.0.2.0/24"
+
+  tags = {
+    Name = "Private_Subnet"
+  }
+}
+
+resource "aws_internet_gateway" "igw" {
+  vpc_id = aws_vpc.vpc_demo.id
+  tags = {
+    Name = "Internet_Gateway_Roboshop"
   }
 }
 
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.vpc_demo.id
 
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.igw.id
+  }
   tags = {
-    Name = "public-route-table"
+    Name = "Public_Route"
   }
 }
 
@@ -29,30 +46,16 @@ resource "aws_route_table" "private" {
   vpc_id = aws_vpc.vpc_demo.id
 
   tags = {
-    Name = "private-route-table"
+    Name = "Private_Route"
   }
 }
 
-resource "aws_internet_gateway" "igw" {
-  vpc_id = aws_vpc.vpc_demo.id
-  tags = {
-    Name = "IGW"
-  }
+resource "aws_route_table_association" "public" {
+  subnet_id      = aws_subnet.public.id
+  route_table_id = aws_route_table.public.id
 }
 
-resource "aws_route" "public_internet_access" {
-  route_table_id         = aws_route_table.public.id
-  destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = aws_internet_gateway.igw.id
+resource "aws_route_table_association" "private" {
+  subnet_id      = aws_subnet.private.id
+  route_table_id = aws_route_table.private.id
 }
-
-resource "aws_route_table_association" "subnet_associations" {
-  for_each = { for subnet in var.subnet_configs : subnet.name => subnet }
-
-  subnet_id = aws_subnet.vpc_demo_subnets[each.key].id
-
-  route_table_id = each.value.name == "Web" ? aws_route_table.public.id : aws_route_table.private.id
-}
-
-
-
