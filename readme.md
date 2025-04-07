@@ -44,5 +44,26 @@ This Terraform configuration sets up a basic AWS Virtual Private Cloud (VPC) arc
 ## 🛠 How to Use
 
 1. Initialize the project:
-   ```bash
-   terraform init
+   $terraform init
+
+2. Review the plan:
+   $terraform plan
+
+3. Apply the configuration:
+   $terraform apply
+
+🔐 Notes
+-> Public subnet has internet access via IGW.
+-> Private subnet is fully internal.
+-> Ideal for workloads where you want to isolate back-end components.
+
+📁 File Structure
+    .
+    ├── main.tf           # Contains all the Terraform resource definitions
+    ├── README.md         # Project documentation
+
+👤 Author
+- Pavan Kumar Divi
+- Environment: Development
+- Project: Roboshop
+- Provisioned using: Terraform
