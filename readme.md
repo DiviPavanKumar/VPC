@@ -53,14 +53,14 @@ This Terraform configuration sets up a basic AWS Virtual Private Cloud (VPC) arc
    $terraform apply
 
 🔐 Notes
--> Public subnet has internet access via IGW.
--> Private subnet is fully internal.
--> Ideal for workloads where you want to isolate back-end components.
+- Public subnet has internet access via IGW.
+- Private subnet is fully internal.
+- Ideal for workloads where you want to isolate back-end components.
 
 📁 File Structure
-    .
-    ├── main.tf           # Contains all the Terraform resource definitions
-    ├── README.md         # Project documentation
+ - .
+ - ├── main.tf           # Contains all the Terraform resource definitions
+ - ├── README.md         # Project documentation
 
 👤 Author
 - Pavan Kumar Divi
